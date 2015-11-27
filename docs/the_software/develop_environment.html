@@ -40,7 +40,7 @@
     <body>
         
         
-    <div class="book" data-level="3.1" data-basepath=".." data-revision="Sun Oct 25 2015 15:37:02 GMT+0800 (CST)">
+    <div class="book" data-level="3.1" data-basepath=".." data-revision="Fri Nov 27 2015 23:27:02 GMT+0800 (CST)">
     
 
 <div class="book-summary">
@@ -710,14 +710,44 @@
             
         </li>
     
-        <li class="chapter " data-level="3.9" data-path="the_software/sdcard.html">
+        <li class="chapter " data-level="3.9" data-path="the_software/arduinojside.html">
+            
+                
+                    <a href="../the_software/arduinojside.html">
+                
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.9.</b>
+                        
+                        ArduinojsIDE
+                    </a>
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="3.10" data-path="the_software/arduinojs.html">
+            
+                
+                    <a href="../the_software/arduinojs.html">
+                
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.10.</b>
+                        
+                        Arduinojs
+                    </a>
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="3.11" data-path="the_software/sdcard.html">
             
                 
                     <a href="../the_software/sdcard.html">
                 
                         <i class="fa fa-check"></i>
                         
-                            <b>3.9.</b>
+                            <b>3.11.</b>
                         
                         SDcard
                     </a>
@@ -837,11 +867,17 @@
                     <section class="normal" id="section-">
                     
                         <h1 id="develop-environment">Develop environment</h1>
-<p>The develop environment to build the bootload, linux kernerl, driver, libArdunio can be downloaded in Docker website by command:</p>
-<p>docker pull lizhizhou/openfpgaduino_buid</p>
-<p>and run the</p>
-<p>docker run -i lizhizhou/openfpgaduino_buid</p>
-<p>go into to the /openfpgaduino path and build all the code by</p>
+<p>The develop environment to build all the software can be downloaded in Docker website.</p>
+<p>Prepare the Build environment</p>
+<p>Install the docker: <a href="https://docs.docker.com/installation/#installation" target="_blank">https://docs.docker.com/installation/#installation</a></p>
+<p>Download the Build environment:
+sudo docker pull openfpgaduino/openfpgaduino</p>
+<p>Run the environment and open the shell:
+sudo docker run --privileged -i -t openfpgaduino/openfpgaduino</p>
+<p>Pull the view:
+git clone --recursive <a href="https://github.com/OpenFPGAduino/OpenFPGAduino.git" target="_blank">https://github.com/OpenFPGAduino/OpenFPGAduino.git</a></p>
+<p>Build all software:</p>
+<p>./configure</p>
 <p>make</p>
 
                     
