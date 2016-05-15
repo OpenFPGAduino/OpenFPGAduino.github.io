@@ -366,22 +366,11 @@ Configurations
       </block>
     </value>
     <statement name="DO">
-      <block type="rgb_led" id="*=4RJ{}oGXB/[TTt=MNm">
-        <field name="led">1</field>
-        <value name="r">
-          <block type="math_number" id="fLmHOFx7Ipk8,MjD]Jlt">
-            <field name="NUM">255</field>
-          </block>
-        </value>
-        <value name="g">
-          <block type="math_number" id="D/R}nES:u8/usACh@fe;">
-            <field name="NUM">0</field>
-          </block>
-        </value>
-        <value name="b">
-          <block type="math_number" id="UAe|Rbm-J}3H*t)G;*WP">
-            <field name="NUM">0</field>
-          </block>
+      <block type="text_print" id="9plyAx?ZOx5#_bzUkHoK" inline="false">
+        <value name="TEXT">
+          <shadow type="text" id="ffEr/Y(beu;*MrR?xMRf">
+            <field name="TEXT">Openfpgaduino</field>
+          </shadow>
         </value>
         <next>
           <block type="wait" id=")iud1+8*JL^fqN11]_Y%">
@@ -390,64 +379,6 @@ Configurations
                 <field name="NUM">1</field>
               </block>
             </value>
-            <next>
-              <block type="rgb_led" id="5M=l.#W!vhvpy%gjZpOs">
-                <field name="led">1</field>
-                <value name="r">
-                  <block type="math_number" id="`?}eN7Kd):2gQPL)`[cV">
-                    <field name="NUM">0</field>
-                  </block>
-                </value>
-                <value name="g">
-                  <block type="math_number" id="X*Z*6wK.1EMq6A)q?|!=">
-                    <field name="NUM">255</field>
-                  </block>
-                </value>
-                <value name="b">
-                  <block type="math_number" id="2{ZA2h*10FlwPApvbZVi">
-                    <field name="NUM">0</field>
-                  </block>
-                </value>
-                <next>
-                  <block type="wait" id="^lJ_(bg*4syWo1jru]7F">
-                    <value name="seconds">
-                      <block type="math_number" id="4Pz{ux4ZS`?NXMyb~/bd">
-                        <field name="NUM">1</field>
-                      </block>
-                    </value>
-                    <next>
-                      <block type="rgb_led" id="|j=pec5W+l%vI9#uQvfn">
-                        <field name="led">1</field>
-                        <value name="r">
-                          <block type="math_number" id="/H.HG:8e,*SDx=[({DT1">
-                            <field name="NUM">0</field>
-                          </block>
-                        </value>
-                        <value name="g">
-                          <block type="math_number" id="phF.l!:cskzhFncZDp[J">
-                            <field name="NUM">0</field>
-                          </block>
-                        </value>
-                        <value name="b">
-                          <block type="math_number" id="mEDv!8Qfo[6oSw:4.h([">
-                            <field name="NUM">255</field>
-                          </block>
-                        </value>
-                        <next>
-                          <block type="wait" id="8c-n?KI]yWP{h%kF}S,a">
-                            <value name="seconds">
-                              <block type="math_number" id="2jxR8o!loD(HltJ#B6or">
-                                <field name="NUM">1</field>
-                              </block>
-                            </value>
-                          </block>
-                        </next>
-                      </block>
-                    </next>
-                  </block>
-                </next>
-              </block>
-            </next>
           </block>
         </next>
       </block>
