@@ -44,6 +44,7 @@
   <script src="blockly/demos/interpreter/acorn_interpreter.js"></script>
   <script src="js/toolbox/toolbox.js"></script>
   <script src="js/language/language.js"></script>
+  <script src="js/ajax.js"></script>
 </head>
 
 <body>
@@ -73,7 +74,7 @@
     <div id=Ex>
     </div>
     <div class="panel panel-default">
-      <span id="textClearError" onclick="clean_error()" class="btn btn-warning"></span>
+      <span id="textClearError" onclick="log.error.clean()" class="btn btn-warning"></span>
       <div class="panel-heading">
         <a data-toggle="collapse" data-parent="#accordion" href="#error">
           <div class="alert alert-error" role="alert"><b id="textError"></b>
@@ -87,7 +88,7 @@
     <div>
 
       <div class="panel panel-default">
-        <span id="textClearConsole" onclick="clean_console()" class="btn btn-warning"></span>
+        <span id="textClearConsole" onclick="log.console.clean()" class="btn btn-warning"></span>
         <div class="panel-heading">
           <a data-toggle="collapse" data-parent="#accordion" href="#console">
             <div class="alert alert-info" role="alert"><b id="textConsole"></b>
@@ -396,36 +397,6 @@
                     load_example_list();
                 }
 
-                function clean_console() {
-                    document.getElementById("console").innerHTML = " ";
-                };
-
-                function clean_error() {
-                    document.getElementById("error").innerHTML = " ";
-                };
-
-                function console_polling() {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("get", "console", false);
-                    xhr.send();
-                    var get = xhr.responseText;
-                    get = get.replace(/\n/gi, '</p><p>');
-                    get = get.replace(/\r/gi, '</p><p>');
-                    document.getElementById("console").innerHTML += "<p>" + get + "<\p>";
-                };
-                //setInterval(console_polling, 1000);
-
-                function error_polling() {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("get", "error", false);
-                    xhr.send();
-                    var get = xhr.responseText;
-                    get = get.replace(/\n/gi, '</p><p>');
-                    get = get.replace(/\r/gi, '</p><p>');
-                    document.getElementById("error").innerHTML += "<p>" + get + "<\p>";
-                };
-                //setInterval(error_polling, 1000);
-
                 function delay_refresh() {
                     window.location.reload();
                 }
@@ -447,10 +418,12 @@
  <!-- Blockly toolbox -->
   <xml id="toolbox" style="display: none">
     <category id="catLogic" colour="210">
+      <block type="controls_if"></block>
       <block type="logic_compare"></block>
       <block type="logic_operation"></block>
       <block type="logic_negate"></block>
       <block type="logic_boolean"></block>
+      <block type="logic_null"></block>
       <block type="logic_ternary"></block>
     </category>
     <category id="catLoops" colour="120">
@@ -584,6 +557,20 @@
       <block type="math_random_float"></block>
     </category>
     <category id="catText" colour="160">
+       <block type="console" inline="false">
+       <value name="Console">
+          <shadow type="text">
+            <field name="TEXT">Openfpgaduino</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="error" inline="false">
+       <value name="Error">
+          <shadow type="text">
+            <field name="TEXT">Openfpgaduino</field>
+          </shadow>
+        </value>
+      </block>
       <block type="text_print" inline="false">
        <value name="TEXT">
           <shadow type="text">
@@ -826,6 +813,8 @@
       </block>  
        <block type="plotclean">
       </block>  
+      <block type="plotpush">
+      </block>  
     </category>
   </xml>
 
@@ -833,12 +822,12 @@
   <block type="controls_repeat_ext" x="120" y="133">
     <value name="TIMES">
       <shadow type="math_number">
-        <field name="NUM">2</field>
+        <field name="NUM">5</field>
       </shadow>
     </value>
     <statement name="DO">
-      <block type="text_print" inline="false">
-        <value name="TEXT">
+      <block type="console" inline="false">
+        <value name="Console">
           <shadow type="text">
             <field name="TEXT">Openfpgaduino</field>
           </shadow>
@@ -852,5 +841,5 @@
 
 <canvas id="myChart" width="400" height="400"></canvas>
 <script src="js/chart.js"></script>
-
+<script src="js/log.js"></script>
 </html>
