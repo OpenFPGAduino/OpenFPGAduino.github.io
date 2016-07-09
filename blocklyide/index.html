@@ -1,20 +1,15 @@
-
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="js/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/Chart.min.js"></script>
-       
-    <!--
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bootstrap -->
+<link href="css/bootstrap-3.3.4.css" rel="stylesheet" type="text/css">
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap-3.3.4.js" type="text/javascript"></script>
+<script src="js/Chart.min.js"></script>
+<!--
   Author:  Zhizhou Li <lzz@meteroi.com>
  
   Copyright 2016 Meteroi
@@ -29,28 +24,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-  <title>Opnefpgaduino Blockly IDE</title>
-  <script>
-  var debug = true;
-  function debuginf(string) {
-      if (debug == true) {
-          console.log(string);
-      }
-  }
-  </script>
-  <script src="blockly/blockly_compressed.js"></script>
-  <script src="blockly/blocks_compressed.js"></script>
-  <script src="blockly/javascript_compressed.js"></script>
-  <script src="blockly/demos/interpreter/acorn_interpreter.js"></script>
-  <script src="js/toolbox/toolbox.js"></script>
-  <script src="js/language/language.js"></script>
+<title>Opnefpgaduino Blockly IDE</title>
+<script src="blockly/blockly_compressed.js"></script>
+<script src="blockly/blocks_compressed.js"></script>
+<script src="blockly/javascript_compressed.js"></script>
+<script src="blockly/demos/interpreter/acorn_interpreter.js"></script>
+<script src="js/debug.js"></script>
+<script src="js/toolbox/toolbox.js"></script>
+<script src="js/language/language.js"></script>
+<script src="js/interpreter.js"></script>
+<script src="js/ajax.js"></script>
+<script src="js/blockly.js"></script>
+<script src="js/chart.js"></script>
+<script src="js/log.js"></script>
+<script src="js/main.js"></script>
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
 </head>
-
 <body>
-    <img id=broadpic alt="">
-    <select id="languageMenu"></select>
-    <div id="IDE" class="">
-        <a id="textSave" href="#savedialog" role="button" class="btn" data-toggle="modal"></a>
+<!--<img id=broadpic alt="">-->
+<div class="container-fluid">
+  <div class="row-fluid">
+        <a id="textSave" href="#savedialog" role="button" class="btn btn-default" data-toggle="modal"></a>
         <span id="textRun" onclick="run()" class="btn btn-success"></span>
         <span id="textStop" onclick="stop()" class="btn btn-warning" ></span>
         <span id="textStep" onclick="step()" class="btn btn-danger" ></span>
@@ -66,391 +65,103 @@
         <!--<span id="textFPGA" onclick="fpga()" class="btn btn-info"></span>-->
         </div>
         </span>
+        <select id="languageMenu"></select>
+  </div>
+  <div class="row-fluid">
+   <div class="col-md-8">
+     <div id="blocklyDiv" style="height: 400px;"></div>
+     <div id=Ex></div>
+   </div>
+   <div class="col-md-4"><div class="panel panel-default">
+      <canvas id="myChart" width="400" height="400"></canvas>  
+      </div>
+   </div>
+  </div>
+  </div>
+  <div class="row-fluid">
+   <div class="col-md-6">
+        <span id="textClearConsole" onclick="log.console.clean()" class="btn btn-warning"></span>
+        <div class="accordion-heading">
+        <a data-toggle="collapse" data-parent="#accordion" href="#console">
+        <div class="alert alert-info" role="alert">
+        <b id="textConsole"></b>
+        </div>
+        </a>
+        </div>
+        <div id="console" class="panel-collapse collapse in">
+        </div>
 
-    <div id="blocklyDiv" style="height: 480px;"></div>
-
-    </div>
-    <div id=Ex>
-    </div>
-    <div class="panel panel-default">
-      <span id="textClearError" onclick="clean_error()" class="btn btn-warning"></span>
-      <div class="panel-heading">
+   </div>
+   <div class="col-md-6">
+      <span id="textClearError" onclick="log.error.clean()" class="btn btn-warning"></span>
+      <div class="accordion-heading">
         <a data-toggle="collapse" data-parent="#accordion" href="#error">
-          <div class="alert alert-error" role="alert"><b id="textError"></b>
+          <div class="alert alert-danger" role="alert">
+          <b id="textError"></b>
           </div>
         </a>
       </div>
       <div id="error" class="panel-collapse collapse in">
       </div>
     </div>
+
+       
+  </div>
+  </div>
+</div>
+
+<!-- Save file dialog -->
+<div class="modal fade" id="savedialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 id="testSaveProgram"></h3>
     </div>
-    <div>
-
-      <div class="panel panel-default">
-        <span id="textClearConsole" onclick="clean_console()" class="btn btn-warning"></span>
-        <div class="panel-heading">
-          <a data-toggle="collapse" data-parent="#accordion" href="#console">
-            <div class="alert alert-info" role="alert"><b id="textConsole"></b>
-            </div>
-          </a>
+    <div class="modal-body">
+        <div class="input-group">
+            <input id="dialog_filename" type="text" class="form-control" placeholder="filename">
+            <span class="input-group-addon">.xml</span>
         </div>
-        <div id="console" class="panel-collapse collapse in">
-        </div>
-      </div>
     </div>
-    <div>
+    <div class="modal-footer">
+        <a id="textPopClose" href="#" data-dismiss="modal" class="btn"></a>
+        <a id="textPopSave" href="#" data-dismiss="modal" class="btn btn-primary" onclick="save()"></a>
+    </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
 
-        <!-- Save file dialog -->
-        <div class="modal hide fade" id="savedialog">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h3 id="testSaveProgram"></h3>
-            </div>
-            <div class="modal-body">
-                <div class="input-group">
-                    <input id="dialog_filename" type="text" class="form-control" placeholder="filename">
-                    <span class="input-group-addon">.xml</span>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a id="textPopClose" href="#" data-dismiss="modal" class="btn"></a>
-                <a id="textPopSave" href="#" data-dismiss="modal" class="btn btn-primary" onclick="save()"></a>
-            </div>
+<!-- pop dialog -->
+<div class="modal fade" id="popdialog">
+    <div class="modal-content">
+    <div class="modal-header">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 id="testSureToDelete"></h3>
+    </div>
+    <div class="modal-body">
+        <div class="input-group">
+            <p id="pop_message"></p>
         </div>
-
-        <!-- pop dialog -->
-        <div class="modal hide fade" id="popdialog">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h3 id="testSureToDelete"></h3>
-            </div>
-            <div class="modal-body">
-                <div class="input-group">
-                    <p id="pop_message"></p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a id="textNo" href="#" data-dismiss="modal" class="btn"></a>
-                <a id="textYes"  href="#" data-dismiss="modal" class="btn btn-primary" onclick="do_delete_example()"></a>
-            </div>
-        </div>
-
-            <script>
-                function ajax_rest_json_get(url) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("get", url, false);
-                    xhr.setRequestHeader("Content-Type", "application/json");
-                    xhr.send();
-                    debuginf(xhr.responseText);
-                    return (JSON.parse(xhr.responseText));
-                }
-                
-                function ajax_rest_json_post(url, json) {
-                    var xhr = new XMLHttpRequest();
-                    var post;
-                    xhr.open("post", url, false);
-                    xhr.setRequestHeader("Content-Type", "application/json");
-                    xhr.send(JSON.stringify(json));
-                    debuginf(xhr.responseText);
-                    return (JSON.parse(xhr.responseText));
-                }
-                
-                function ajax_rest_json_delete(url, json) {
-                    var xhr = new XMLHttpRequest();
-                    var post;
-                    xhr.open("delete", url, false);
-                    xhr.setRequestHeader("Content-Type", "application/json");
-                    xhr.send(JSON.stringify(json));
-                    debuginf(xhr.status);
-                }
-                
-                
-                function ajax_rest_post(url, arg1, arg2) {
-                    var xhr = new XMLHttpRequest();
-                    var post;
-                    xhr.open("post", url, false);
-                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-                    if (arg1 != undefined)
-                        post = encodeURIComponent("arg1") + "=" + encodeURIComponent(arg1) + "&";
-                    else
-                        post = null;
-                    if (arg2 != undefined)
-                        post += encodeURIComponent("arg2") + "=" + encodeURIComponent(arg2) + "&";
-                    xhr.send(post);
-                    debuginf(xhr.status);
-                }
-              
-                var workspace; 
-                var load_blockly = function()
-                {
-                      load_language();
-                      workspace = Blockly.inject('blocklyDiv',
-                          {media: 'blockly/media/',
-                          zoom:{controls: true, wheel: true},
-                          toolbox: document.getElementById('toolbox')});
-                      Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),
-                                                workspace);
-                }
-
-                function load_config_list() {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("get", "load_config", false);
-                    xhr.send();
-                    var versionlist = xhr.responseText;
-                    debuginf(versionlist);
-                    var list = versionlist.split(',');
-                    var html_list = "";
-                    debuginf(list);
-                    for (var index in list) {
-                        debuginf(list[index]);
-                        var name = list[index].split('.')[0];
-                        var ext = list[index].split('.')[1];
-                        if (ext == 'rbf') {
-                            html_list += "<li><a href='#' onClick= configrations(event)>" +
-                                name + "</a></li>";
-                        }
-                    }
-                    document.getElementById("version_list").innerHTML = html_list;
-                }
-
-                function load_example_list() {
-                    var list = ajax_rest_json_get("/db/list/example");
-                    debuginf(list);
-                    if (list == null ) return;
-                    var html_list = "";
-                    for (var index in list) {
-                        debuginf(list[index]);
-                        var name = list[index].file;
-                        html_list += "<span id=" + name + " onmousedown='mousedown(event)' onmouseup='mouseup(event)' class='btn btn-info'>" + name + "</span>";
-                    }
-                    document.getElementById("Ex").innerHTML = html_list;
-                }
-                
-                // event handle for webpage
-                function run() {
-                  // Generate JavaScript code and run it.
-                  window.LoopTrap = 1000;
-                  Blockly.JavaScript.INFINITE_LOOP_TRAP =
-                      'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
-                  var code = Blockly.JavaScript.workspaceToCode(workspace);
-                  Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
-                  debuginf(code);
-                  try {
-                    eval(code);
-                  } catch (e) {
-                    alert(e);
-                  }
-                }
-                function save() {
-                    // Generate XML code and display it.
-                    var dom = Blockly.Xml.workspaceToDom(workspace);
-                    var xml = Blockly.Xml.domToPrettyText(dom);
-                    var file = document.getElementById("dialog_filename").value;
-                    debuginf(xml);
-                    var json = {
-                        file: file,
-                        xml: xml
-                    }
-                    ajax_rest_json_post("/db/add/example", json);
-                    load_example_list();
-                }
-                
-                function stop() {
-                    // debuginf("stop");
-                    // ajax_rest_post("stop");
-                }
-
-                var code_runing = false;
-                function step(){
-                    if(code_runing == false) {
-                      parseCode();
-                      code_runing = true;
-                    }
-                    else {
-                      stepCode();
-                    }
-                }
-
-             var myInterpreter = null;
-
-            function initApi(interpreter, scope) {
-              // Add an API function for the alert() block.
-              var wrapper = function(text) {
-                text = text ? text.toString() : '';
-                return interpreter.createPrimitive(alert(text));
-              };
-              interpreter.setProperty(scope, 'alert',
-                  interpreter.createNativeFunction(wrapper));
-
-              // Add an API function for the prompt() block.
-              var wrapper = function(text) {
-                text = text ? text.toString() : '';
-                return interpreter.createPrimitive(prompt(text));
-              };
-              interpreter.setProperty(scope, 'prompt',
-                  interpreter.createNativeFunction(wrapper));
-
-              // Add an API function for highlighting blocks.
-              var wrapper = function(id) {
-                id = id ? id.toString() : '';
-                return interpreter.createPrimitive(highlightBlock(id));
-              };
-              interpreter.setProperty(scope, 'highlightBlock',
-                  interpreter.createNativeFunction(wrapper));
-            }
-
-            var highlightPause = false;
-
-            function highlightBlock(id) {
-              workspace.highlightBlock(id);
-              highlightPause = true;
-            }
-
-            function parseCode() {
-              // Generate JavaScript code and parse it.
-              Blockly.JavaScript.STATEMENT_PREFIX = 'highlightBlock(%1);\n';
-              Blockly.JavaScript.addReservedWords('highlightBlock');
-              var code = Blockly.JavaScript.workspaceToCode(workspace);
-              myInterpreter = new Interpreter(code, initApi);
-              highlightPause = false;
-              workspace.traceOn(true);
-              workspace.highlightBlock(null);
-            }
-
-            function stepCode() {
-              try {
-                var ok = myInterpreter.step();
-              } finally {
-                if (!ok) {
-                  // Program complete, no more code to execute.
-                  code_runing = false;
-                  return;
-                }
-              }
-              if (highlightPause) {
-                // A block has been highlighted.  Pause execution here.
-                highlightPause = false;
-              } else {
-                // Keep executing until a highlight statement is reached.
-                stepCode();
-              }
-            }
-
-                function reboot() {
-                    debuginf("reboot");
-                    ajax_rest_get("reboot");
-                }
-
-                function configrations(event) {
-                    var version = event.srcElement.innerText;
-                    document.getElementById('broadpic').src = 'config/' + version + '.jpg';
-                    debuginf("configrations");
-                    debuginf(version);
-                    ajax_rest_post("config", version);
-                }
-
-                function fpga() {
-                    window.location.port = 8686;
-                }
-
-                function load_example(event) {
-                    var example = event.srcElement.innerText;
-                    debuginf(example);
-                    debuginf("load code");
-                    var query = {"file": { "$eq" : example}}
-                    var json = ajax_rest_json_post("/db/query/example", query)
-                    debuginf(json[0].xml);
-                    debuginf(document.getElementById('startBlocks'));
-                    workspace.clear();
-                    Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(json[0].xml),
-                        workspace);
-                }
-
-
-                var timer = null;
-
-                function mousedown(event) {
-                    load_example(event);
-                    timer = setTimeout(function() {
-                        delete_example(event)
-                    }, 1500); //set the timeout
-                };
-
-                function mouseup(event) {
-                    clearTimeout(timer);
-                };
-
-                function delete_example(event) {
-                    var file = event.srcElement.innerText;
-                    debuginf(file);
-                    document.getElementById("pop_message").innerText = file;
-                    $("#popdialog").modal();
-                }
-
-                function do_delete_example() {
-                    file = document.getElementById("pop_message").innerText;
-                    debuginf("do delete code");
-                    debuginf(file);
-                    var json = {file: file}
-                    ajax_rest_json_delete("/db/remove/example",json);
-                    load_example_list();
-                }
-
-                function clean_console() {
-                    document.getElementById("console").innerHTML = " ";
-                };
-
-                function clean_error() {
-                    document.getElementById("error").innerHTML = " ";
-                };
-
-                function console_polling() {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("get", "console", false);
-                    xhr.send();
-                    var get = xhr.responseText;
-                    get = get.replace(/\n/gi, '</p><p>');
-                    get = get.replace(/\r/gi, '</p><p>');
-                    document.getElementById("console").innerHTML += "<p>" + get + "<\p>";
-                };
-                //setInterval(console_polling, 1000);
-
-                function error_polling() {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("get", "error", false);
-                    xhr.send();
-                    var get = xhr.responseText;
-                    get = get.replace(/\n/gi, '</p><p>');
-                    get = get.replace(/\r/gi, '</p><p>');
-                    document.getElementById("error").innerHTML += "<p>" + get + "<\p>";
-                };
-                //setInterval(error_polling, 1000);
-
-                function delay_refresh() {
-                    window.location.reload();
-                }
-
-                function page_refresh() {
-                    setTimeout('delay_refresh()', 60000);
-
-                }
-
-                window.onload = function() {
-                    load_blockly();
-                    load_example_list();
-                    //load_config_list();
-
-                }
-
-                </script>
+    </div>
+    <div class="modal-footer">
+        <a id="textNo" href="#" data-dismiss="modal" class="btn"></a>
+        <a id="textYes"  href="#" data-dismiss="modal" class="btn btn-primary" onclick="do_delete_example()"></a>
+    </div>
+   </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
 
  <!-- Blockly toolbox -->
   <xml id="toolbox" style="display: none">
     <category id="catLogic" colour="210">
+      <block type="controls_if"></block>
       <block type="logic_compare"></block>
       <block type="logic_operation"></block>
       <block type="logic_negate"></block>
       <block type="logic_boolean"></block>
+      <block type="logic_null"></block>
       <block type="logic_ternary"></block>
     </category>
     <category id="catLoops" colour="120">
@@ -584,6 +295,20 @@
       <block type="math_random_float"></block>
     </category>
     <category id="catText" colour="160">
+       <block type="console" inline="false">
+       <value name="Console">
+          <shadow type="text">
+            <field name="TEXT">Openfpgaduino</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="error" inline="false">
+       <value name="Error">
+          <shadow type="text">
+            <field name="TEXT">Openfpgaduino</field>
+          </shadow>
+        </value>
+      </block>
       <block type="text_print" inline="false">
        <value name="TEXT">
           <shadow type="text">
@@ -826,31 +551,58 @@
       </block>  
        <block type="plotclean">
       </block>  
+      <block type="plotpush">
+      </block>  
     </category>
   </xml>
 
 <xml id=startBlocks style="display: none">
-  <block type="controls_repeat_ext" x="120" y="133">
+  <block type="controls_repeat_ext">
     <value name="TIMES">
       <shadow type="math_number">
-        <field name="NUM">2</field>
+        <field name="NUM">5</field>
       </shadow>
     </value>
     <statement name="DO">
-      <block type="text_print" inline="false">
-        <value name="TEXT">
-          <shadow type="text">
+      <block type="console" inline="false">
+        <value name="Console">
+          <shadow type="text" >
             <field name="TEXT">Openfpgaduino</field>
           </shadow>
         </value>
       </block>
     </statement>
+    <next>
+      <block type="plot">
+        <value name="Name">
+          <block type="text">
+            <field name="TEXT">Openfpgaduino</field>
+          </block>
+        </value>
+        <value name="y">
+          <block type="lists_split">
+            <mutation mode="SPLIT"></mutation>
+            <field name="MODE">SPLIT</field>
+            <value name="INPUT">
+              <block type="text">
+                <field name="TEXT">1,2,3,4,5</field>
+              </block>
+            </value>
+            <value name="DELIM">
+              <shadow type="text">
+                <field name="TEXT">,</field>
+              </shadow>
+            </value>
+          </block>
+        </value>
+        <value name="colour">
+          <block type="colour_picker">
+            <field name="COLOUR">#00cccc</field>
+          </block>
+        </value>
+      </block>
+    </next>
   </block>
 </xml>
-
 </body>
-
-<canvas id="myChart" width="400" height="400"></canvas>
-<script src="js/chart.js"></script>
-
 </html>

@@ -1,8 +1,12 @@
-var ctx = document.getElementById("myChart");
-var myLineChart = new Chart(ctx, {
+var ctx, myLineChart
+
+function load_chart() 
+{
+    ctx = document.getElementById("myChart");
+    myLineChart = new Chart(ctx, {
     type: 'line',
     data: {
-       datasets : []
+        datasets: []
     },
     options: {
         scales: {
@@ -12,82 +16,93 @@ var myLineChart = new Chart(ctx, {
             }]
         }
     }
-});
+    });
+    
+}
 
-function get_data_byname(datasets , name)
-{
-    for(i in datasets) {
-        if(datasets[i].label == name)
+function get_data_byname(datasets, name) {
+    for (i in datasets) {
+        if (datasets[i].label == name)
             return datasets[i];
     }
     return null;
 }
 
-function plotxy (name, x, y, color) 
-{
-  var data = [];
-  for(var i= 0; i<y.length;i++)
-  {
-    data.push({y:y[i],x:x[i]})
-  }
-  dataset = {
-    label:name,
-    data:data,
-    fill: false,
-    borderColor: color,
-  }
-  myLineChart.data.datasets.push(dataset);
-  myLineChart.update();
-}
-function plot(name, y, color) 
-{
-  var data = [];
-  for(var i= 0;i<y.length;i++)
-  {
-    data.push({y:y[i],x:i})
-  }
-  dataset = {
-    label:name,
-    data:data,
-    fill: false,
-    borderColor: color,
-  }
-  myLineChart.data.datasets.push(dataset);
-  myLineChart.update();
-}
-
-var plot_size = 50;
-function plotp(name, p, color) 
-{
-  var dataset = get_data_byname(myLineChart.data.datasets,name);
-  if (dataset == null)
-  {
+function plotxy(name, x, y, color) {
+    var data = [];
+    for (var i = 0; i < y.length; i++) {
+        data.push({
+            y: y[i],
+            x: x[i]
+        })
+    }
     dataset = {
-        label:name,
-        data: [],
+        label: name,
+        data: data,
         fill: false,
         borderColor: color,
     }
-  }
-  var point = {y:p,x:dataset.data[dataset.data.length-1].x+1};
-  dataset.data.push(point);
-  if(dataset.data.length > plot_size)
-    dataset.data.shift();
-  myLineChart.update();
+    myLineChart.data.datasets.push(dataset);
+    myLineChart.update();
 }
-function plotclean()
-{
-  myLineChart.data.datasets=[];
-  myLineChart.update();
-  myLineChart.clear(); 
+
+function plot(name, y, color) {
+    var data = [];
+    for (var i = 0; i < y.length; i++) {
+        data.push({
+            y: y[i],
+            x: i
+        })
+    }
+    dataset = {
+        label: name,
+        data: data,
+        fill: false,
+        borderColor: color,
+    }
+    myLineChart.data.datasets.push(dataset);
+    myLineChart.update();
 }
-plot("lizhizhou", [1,2,3,2,1], "rgba(0,0,192,1)")
-plot("ababas", [65, 59, 80, 81, 56, 55, 40], "rgba(75,192,192,1)")
-//plotclean()
-setInterval(function(){
-  plotp("lizhizhou",Math.random() * 100,"rgba(0,0,192,1)");
-    plotp("ababas",Math.random() * 100,"rgba(75,192,192,1)");
-},1000);
+
+function plotp(name, p, color, size) {
+    var dataset = get_data_byname(myLineChart.data.datasets, name);
+    var point
+    if (dataset == null) {
+        dataset = {
+            label: name,
+            data: [],
+            fill: false,
+            borderColor: color,
+        }
+        myLineChart.data.datasets.push(dataset)
+        point = {
+            y: p,
+            x: 1
+        }
+    } else {
+        point = {
+            y: p,
+            x: dataset.data[dataset.data.length - 1].x + 1
+        };
+    }
+    dataset.data.push(point);
+    if (dataset.data.length > size)
+        dataset.data.shift();
+    myLineChart.update();
+}
+
+function plotclean() {
+    myLineChart.data.datasets = [];
+    myLineChart.update();
+    myLineChart.clear();
+}
+// plot("lizhizhou", [1,2,3,2,1], "rgba(0,0,192,1)")
+// plot("ababas", [65, 59, 80, 81, 56, 55, 40], "rgba(75,192,192,1)")
+// //plotclean()
+// setInterval(function(){
+//     plotp("lizhizhou",Math.random() * 100,"rgba(0,0,192,1)", 50);
+//     plotp("ababas",Math.random() * 100,"rgba(75,192,192,1)", 50);
+// },1000);
 
 // var canvas = document.getElementById('myChart'),
 //     ctx = canvas.getContext('2d'),
@@ -122,4 +137,3 @@ setInterval(function(){
 //   // Remove the first point so we dont just add values forever
 //   myLiveChart.removeData();
 // }, 5000);
-
