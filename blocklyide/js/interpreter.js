@@ -2,6 +2,60 @@
 var myInterpreter = null;
 
 function initApi(interpreter, scope) {
+ 
+   var wrapper = function (url) {
+    url = url ? url.toString() : '';
+    return interpreter.createPrimitive(ajax_get(url));
+  };
+ 
+    
+  var wrapper = function (name, x, y, color) {
+     var xdata = []
+    for (i in y.properties)
+    {
+        xdata.push(x.properties[i].data)
+    }
+    var ydata = []
+    for (i in y.properties)
+    {
+        ydata.push(y.properties[i].data)
+    }
+    return interpreter.createPrimitive(plotxy(name.data, xdata, ydata, color.data));
+  };
+  interpreter.setProperty(scope, 'plotxy',
+    interpreter.createNativeFunction(wrapper));   
+    
+    var wrapper = function (name, y, color) {
+    var ydata = []
+    for (i in y.properties)
+    {
+        ydata.push(y.properties[i].data)
+    }
+    return interpreter.createPrimitive(plot(name.data, ydata, color.data));
+  };
+  interpreter.setProperty(scope, 'plot',
+    interpreter.createNativeFunction(wrapper));
+
+  var wrapper = function () {
+    return interpreter.createPrimitive(plotclean());
+  };
+  interpreter.setProperty(scope, 'plotclean',
+    interpreter.createNativeFunction(wrapper));
+
+  var wrapper = function (text) {
+    text = text ? text.toString() : '';
+    return interpreter.createPrimitive(console_print(text));
+  };
+  interpreter.setProperty(scope, 'console_print',
+    interpreter.createNativeFunction(wrapper));
+    
+    var wrapper = function (text) {
+    text = text ? text.toString() : '';
+    return interpreter.createPrimitive(error_print(text));
+  };
+  interpreter.setProperty(scope, 'error_print',
+    interpreter.createNativeFunction(wrapper));  
+    
   // Add an API function for the alert() block.
   var wrapper = function (text) {
     text = text ? text.toString() : '';

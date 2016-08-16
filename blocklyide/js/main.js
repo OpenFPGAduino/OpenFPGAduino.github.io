@@ -24,12 +24,13 @@ function save() {
         file: file,
         xml: xml
     }
-    ajax_rest_json_post("/db/add/example", json);
+    ajax_post("/db/add/example", json);
     load_example_list();
 }
 
 function stop() {
-    myInterpreter.run();
+    parseCode();
+    code_runing = false;
 }
 
 var code_runing = false;
@@ -63,7 +64,7 @@ function stepCode() {
 
 function reboot() {
     debuginf("reboot");
-    ajax_rest_get("reboot");
+    ajax_get("reboot");
 }
 
 function configrations(event) {
@@ -71,7 +72,7 @@ function configrations(event) {
     //document.getElementById('broadpic').src = 'config/' + version + '.jpg';
     debuginf("configrations");
     debuginf(filename);
-    ajax_rest_post("/fpga/config", "{filename:"+ filename+".rbf"+"}}");
+    ajax_post("/fpga/config", { "filename" : filename +".rbf" });
 }
 
 function fpga() {
@@ -83,7 +84,7 @@ function load_example(event) {
     debuginf(example);
     debuginf("load code");
     var query = { "file": { "$eq": example } }
-    var json = ajax_rest_json_post("/db/query/example", query)
+    var json = ajax_post("/db/query/example", query)
     debuginf(json[0].xml);
     debuginf(document.getElementById('startBlocks'));
     workspace.clear();
@@ -117,7 +118,7 @@ function do_delete_example() {
     debuginf("do delete code");
     debuginf(file);
     var json = { file: file }
-    ajax_rest_json_delete("/db/remove/example", json);
+    ajax_delete("/db/remove/example", json);
     load_example_list();
 }
 
@@ -131,7 +132,8 @@ function page_refresh() {
 }
 
 function load_config_list() {
-    list = ajax_rest_json_get("/fpga/config/list");
+    var html_list ="";
+    list = ajax_get("/fpga/config/list");
     debuginf(list);
     for (var index in list) {
         debuginf(list[index]);
@@ -146,7 +148,7 @@ function load_config_list() {
 }
 
 function load_example_list() {
-    var list = ajax_rest_json_get("/db/list/example");
+    var list = ajax_get("/db/list/example");
     debuginf(list);
     if (list == null) return;
     var html_list = "";
