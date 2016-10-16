@@ -14,6 +14,7 @@ function run() {
         alert(e);
     }
 }
+var example_list;
 function save() {
     // Generate XML code and display it.
     var dom = Blockly.Xml.workspaceToDom(workspace);
@@ -24,7 +25,19 @@ function save() {
         file: file,
         xml: xml
     }
-    ajax_post("/db/add/example", json);
+    for(i in example_list)
+    {
+        if(example_list[i] == file){
+            var body = {
+                query : {file:json.file},
+                command : {$set:{xml:json.xml}}
+            }
+            ajax_post("/db/update/blockly_example", body);
+            load_example_list();
+            return;
+        }
+    }
+    ajax_post("/db/add/blockly_example", json);
     load_example_list();
 }
 
@@ -84,8 +97,8 @@ function load_example(event) {
     debuginf(example);
     debuginf("load code");
     var query = { "file": { "$eq": example } }
-    var json = ajax_post("/db/query/example", query)
-    debuginf(json[0].xml);
+    var json = ajax_post("/db/query/blockly_example", query)
+    debuginf(json[0]);
     debuginf(document.getElementById('startBlocks'));
     workspace.clear();
     Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(json[0].xml),
@@ -118,7 +131,7 @@ function do_delete_example() {
     debuginf("do delete code");
     debuginf(file);
     var json = { file: file }
-    ajax_delete("/db/remove/example", json);
+    ajax_delete("/db/remove/blockly_example", json);
     load_example_list();
 }
 
@@ -148,13 +161,15 @@ function load_config_list() {
 }
 
 function load_example_list() {
-    var list = ajax_get("/db/list/example");
+    var list = ajax_get("/db/list/blockly_example");
     debuginf(list);
     if (list == null) return;
+    example_list = [];
     var html_list = "";
     for (var index in list) {
         debuginf(list[index]);
         var name = list[index].file;
+        example_list.push(name);
         html_list += "<span id=" + name + " onmousedown='mousedown(event)' onmouseup='mouseup(event)' class='btn btn-info'>" + name + "</span>";
     }
     document.getElementById("Ex").innerHTML = html_list;
